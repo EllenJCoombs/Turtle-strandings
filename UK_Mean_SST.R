@@ -1,5 +1,7 @@
 
-#Packages 
+#Packages required for data cleaning
+#install.packages("dplyr")
+#install.packages("lubridate")
 library(dplyr)
 library(lubridate)
 
@@ -11,17 +13,21 @@ library(lubridate)
 UK_mean_SST <- read.csv("UK_mean_SST.csv")
 
 #Renaming uk_mean_SST columns 
+#If an error message runs, check to see if this is already done 
 UK_mean_SST <- UK_mean_SST %>%
-  dplyr::rename(Date = time)
+  rename(Date = time)
 
 
-#Filter out the columns we want - this is 1960:2015 
+#Filter out the columns we want - this is 1960:2014
 #Filtered this way instead of by year (for example) because the dates were messy 
 UK_mean_SST <- UK_mean_SST %>% 
-  filter(row_number() %in% 1081:1752)
+  filter(row_number() %in% 1081:1740)
+
+#Remove surplus column 
+UK_mean_SST$X <- NULL
 
 #Change date format of new dataset
-sapply(UK_mean_SST, class) #what class are the variables 
+sapply(UK_mean_SST, class) #what class are the variables?
 UK_mean_SST <- mutate(UK_mean_SST, Date = dmy(Date))
 
 
