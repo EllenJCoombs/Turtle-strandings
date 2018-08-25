@@ -27,15 +27,32 @@ storms <- storms %>%
   dplyr::summarise(count = sum(Count))
 
 
-storms <- storms %>%
-  complete(Year, fill = list(Count = 0))
-
+storms[is.na(storms)] <- 0
 
 #Renaming count to storms 
+#New data frame called "Storms" for the model 
 Storms <- storms %>%
   rename(Storms = count)
 
 #Save cleaned storms data 
-write.csv(Storms, file = "Storm_data.csv")
+#write.csv(Storms, file = "Storm_data.csv")
+
+#=================================================================================================
+#Human population data 
+#Read in UK population data 
+
+#Population data UK
+#Also in the "modelling' folder 
+#This is a data file that is combined with yearly strandings 
+
+Population <- read.csv("Population_UK.csv")
+Population <- Population %>%
+  rename(Year = YEAR) %>%
+  rename(Population = POPULATION)
+
+#Save data for pulling into final correlates dataset 
+write.csv(Population, file = Population)
+
+
 
 
