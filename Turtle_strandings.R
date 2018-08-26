@@ -50,9 +50,26 @@ Population <- Population %>%
   rename(Year = YEAR) %>%
   rename(Population = POPULATION)
 
+#Filter out turtle dates 
+
+Population <- Population %>% 
+  filter(row_number() %in% 48:102)
+
 #Save data for pulling into final correlates dataset 
 #write.csv(Population, file = Population)
 
+#===============================================================================================
+#NAO data 
 
+NAO_data <- read.csv("NAO_data.csv")
+NAO_data$X <- NULL
+
+#Rename the columns if required 
+#NAO_data <- NAO_data %>%
+#dplyr::rename(NAO_index = n)
+
+#Cut down to turtle dates 
+Population <- Population %>% 
+  filter(row_number() %in% 48:102)
 
 
