@@ -89,6 +89,11 @@ Turtle_model$year <- NULL
 Turtle_model$X <- NULL 
 Turtle_model$Year2 <- NULL 
 
+#Change the name of the SST variable
+Turtle_model <- Turtle_model %>%
+  rename("UK_mean_SST" = UK_mean)
+
+
 
 #join the two datasets
 all_strandings <- full_join(all_strandings, Model_data, by = "Year")
