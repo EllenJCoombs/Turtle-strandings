@@ -69,7 +69,32 @@ NAO_data$X <- NULL
 #dplyr::rename(NAO_index = n)
 
 #Cut down to turtle dates 
-Population <- Population %>% 
+NAO_data <- NAO_data %>% 
   filter(row_number() %in% 48:102)
+
+
+#===============================================================================================
+#Bind all the data together for modelling 
+#install.packages("tidyr")
+library(tidyr)
+
+#Ensure all correlates are read in using the above script 
+Turtle_model <- bind_cols(Population, Storms, SST_yearly_mean, NAO_data)
+
+
+#Remove uneeded columns 
+Turtle_model$Year1<- NULL
+Turtle_model$year <- NULL 
+Turtle_model$X <- NULL 
+Turtle_model$Year2 <- NULL 
+
+
+#join the two datasets
+all_strandings <- full_join(all_strandings, Model_data, by = "Year")
+all_strandings$X <- NULL
+
+#Dataset should now have all above correlates + Species + Total_strandings 
+
+
 
 
