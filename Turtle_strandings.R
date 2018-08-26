@@ -1,6 +1,6 @@
 
 #Reading in turtle strandings data 
-#1960-2014 
+#1960-2014
 
 Turtle_strandings <- read.csv("Turtle_strandings.csv")
 
@@ -51,7 +51,7 @@ Population <- Population %>%
   rename(Population = POPULATION)
 
 #Save data for pulling into final correlates dataset 
-write.csv(Population, file = Population)
+#write.csv(Population, file = Population)
 
 
 
