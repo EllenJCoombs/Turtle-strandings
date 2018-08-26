@@ -80,7 +80,7 @@ NAO_data <- NAO_data %>%
 library(tidyr)
 
 #Ensure all correlates are read in using the above script 
-Turtle_model <- bind_cols(Population, Storms, SST_yearly_mean, NAO_data)
+Turtle_model <- bind_cols(Turtle_strandings, Population, Storms, SST_yearly_mean, NAO_data)
 
 
 #Remove uneeded columns 
@@ -88,10 +88,14 @@ Turtle_model$Year1<- NULL
 Turtle_model$year <- NULL 
 Turtle_model$X <- NULL 
 Turtle_model$Year2 <- NULL 
+Turtle_model$Year <- NULL
 
-#Change the name of the SST variable
+#Change the name of the SST variable, year and strandings count
 Turtle_model <- Turtle_model %>%
-  rename("UK_mean_SST" = UK_mean)
+  rename("UK_mean_SST" = UK_mean) %>%
+  rename("Year" = YEAR) %>%
+  rename("Total_strandings" = "Count")
+  
 
 
 

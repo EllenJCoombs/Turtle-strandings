@@ -11,9 +11,8 @@ unique(Turtle_model$UK_mean_SST) #multiple groups
 unique(Turtle_model$Storms) #7 groups 
 unique(Turtle_model$NAO_index) #multiple groups
 
-
 #GAM for the above with Species as the factor smooth 
-All_strandc <- gam(Total_strandings ~ offset(log(Population)) +s(Year, Species, bs="fs") +
+Turtles_a <- gam( ~ offset(log(Population)) +s(Year, Species, bs="fs") +
                      s(Storms, k=5, bs="ts") +
                      s(Max_K_index, k=4, bs="ts") +
                      s(Max_SST, bs="ts") +
