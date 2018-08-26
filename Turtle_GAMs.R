@@ -10,25 +10,25 @@ library(mgcv)
 unique(Turtle_model$UK_mean_SST) #multiple groups 
 unique(Turtle_model$Storms) #7 groups 
 unique(Turtle_model$NAO_index) #multiple groups
+uni
 
 #GAM for the above with Species as the factor smooth 
-Turtles_a <- gam( ~ offset(log(Population)) +s(Year, Species, bs="fs") +
-                     s(Storms, k=5, bs="ts") +
-                     s(Max_K_index, k=4, bs="ts") +
-                     s(Max_SST, bs="ts") +
+Turtles_a <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
+                     s(Storms, k=7, bs="ts") +
+                     s(UK_mean_SST, bs="ts") +
                      s(NAO_index, bs="ts"), 
-                   data= all_strandings, 
+                   data= Turtle_model, 
                    method = "REML",
-                   family=nb())
+                   family= nb())
 
 #GAM summary and GAM plots 
-summary(All_strandc)
+summary(Turtles_a)
 par(mfrow = c(2,2))
-plot(All_strandc)
+plot(Turtles_a)
 
 #AIC if required 
 #AIC(All_strandc)
 
 #Gam.check
 par(mfrow=c(2,2))
-gam.check(All_strandc)
+gam.check(Turtles_a)

@@ -99,15 +99,5 @@ Turtle_model <- Turtle_model %>%
 
 
 
-#join the two datasets
-all_strandings <- full_join(all_strandings, Model_data, by = "Year")
-all_strandings$X <- NULL
-
-#Dataset should now have all above correlates + Species + turtle strandings 
-
-
-#
-
-
 
 
