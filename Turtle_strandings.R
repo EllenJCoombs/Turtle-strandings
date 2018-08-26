@@ -9,6 +9,7 @@ Turtle_strandings <- read.csv("Turtle_strandings.csv")
 #=============================================================================================
 #Storm data 
 #Read from "Modelling" folder 
+#install.packages("dplyr") - run this when you're running the code for the first time 
 library(dplyr)
 storms <- read.csv("Storm_data.csv")
 
@@ -75,7 +76,7 @@ NAO_data <- NAO_data %>%
 
 #===============================================================================================
 #Bind all the data together for modelling 
-#install.packages("tidyr")
+#install.packages("tidyr") - run this when running the code for the first time 
 library(tidyr)
 
 #Ensure all correlates are read in using the above script 
@@ -93,7 +94,10 @@ Turtle_model$Year2 <- NULL
 all_strandings <- full_join(all_strandings, Model_data, by = "Year")
 all_strandings$X <- NULL
 
-#Dataset should now have all above correlates + Species + Total_strandings 
+#Dataset should now have all above correlates + Species + turtle strandings 
+
+
+#
 
 
 
