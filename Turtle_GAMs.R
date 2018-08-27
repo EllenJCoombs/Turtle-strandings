@@ -19,7 +19,7 @@ Turtles_a <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") 
                      s(NAO_index, bs="ts"), 
                    data= Turtle_model, 
                    method = "REML",
-                   family= nb())
+                   family=tw(a=1.2))
 
 #GAM summary and GAM plots 
 summary(Turtles_a)
