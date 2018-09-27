@@ -49,3 +49,6 @@ SST_yearly_mean <- aggregate(UK_mean ~ year, data = SST_day_month_year, mean)
 
 #We now have a mean montly temp (taken from 14 loctions since for 1960 - 2014)
 #Save this as sea turtle data (1960-2015)
+
+#Now save SST_yearly_mean
+write.csv(SST_yearly_mean, file = "SST_yearly_mean.csv")
