@@ -56,7 +56,7 @@ Turtles_c <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") 
                    s(mortality, bs="ts"),
                  data= mortality_model, 
                  method = "REML",
-                 family=(nb))
+                 family=(poisson))
 
 #GAM summary and GAM plots 
 summary(Turtles_c)
