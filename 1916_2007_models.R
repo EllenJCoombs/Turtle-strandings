@@ -51,7 +51,6 @@ library(mgcv)
 unique(mortality_model$Simulated_arrivals) #multiple groups 
 unique(mortality_model$mortality) #multiple levels 
 
-#GAM for the above with Species as the factor smooth 
 Turtles_c <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
                    s(Simulated_arrivals, bs="ts") +
                    s(mortality, bs="ts"),
