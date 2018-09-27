@@ -1,5 +1,9 @@
 #Simualtion models 
 
+simulated_arrivals <- read.csv("Simulated_arrivals.csv")
+#1961 - 2009
+
+
 #================================================================================================
 #GS transport data 
 
@@ -21,6 +25,7 @@ NAC_transport <- NAC_transport %>%
   filter(row_number() %in% 12:61)
 
 
+
 #================================================================================================
 #Mortality data 
 
@@ -28,6 +33,9 @@ NAC_transport <- NAC_transport %>%
 Mortality <- read.csv('mortality.csv')
 Mortality <- Mortality %>%
   filter(row_number() %in% 13:60)
+
+Mortality <- Mortality %>%
+  select(year,mortality)
 
 #=================================================================================================
 #Turtle stranding 2009 
