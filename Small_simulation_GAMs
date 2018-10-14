@@ -1,0 +1,37 @@
+#Simulation GAMs 
+#With small turtles 
+
+#Here: 
+#Strandings, population, GS_transport, NAC_transport- all 1960 -  2009 
+#Need to look at simulated arrivals, mortality etc 
+
+
+#Running turtle generlised additive models (GAMs)
+
+library(dplyr)
+#install.packages("mgcv") run this when running the code for the first time 
+library(mgcv)
+
+#This is to check how high to make the k value (k-1)
+#k (almost always k-1) i.e., does k need to be manually set to 7 or 5 (if it around this number)
+unique(Small_simulation_model$GS_transport) #multiple groups 
+unique(Small_simulation_model$NAC_transport) #multiple groups
+
+#GAM for the above with Species as the factor smooth 
+Small_turtles_b <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
+                   s(GS_transport, bs="ts") +
+                   s(NAC_transport, bs="ts"),
+                 data= Small_simulation_model, 
+                 method = "REML",
+                 family=tw(a=1.2))
+
+
+#GAM summary and GAM plots 
+summary(Small_turtles_b)
+par(mfrow = c(2,2))
+plot(Small_turtles_b)
+
+
+#Gam.check
+par(mfrow=c(2,2))
+gam.check(Small_turtles_b)
