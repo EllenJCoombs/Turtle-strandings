@@ -1,0 +1,158 @@
+#Reading in turtle strandings data 
+#1960-2014
+
+
+Small_strandings <- read.csv("turtle_small.csv")
+
+#Double check that it's 1960 - 2014 
+
+#=============================================================================================
+#Storm data 
+#Read from "Modelling" folder 
+#install.packages("dplyr") - run this when you're running the code for the first time 
+library(dplyr)
+storms <- read.csv("Storm_data.csv")
+
+#This code adds 0s where no storms were counted for that year 
+#Select data 
+storms <- storms %>% 
+  select(Year, Count)
+
+#Cut data down: 1960 - 2014
+storms <- storms %>% 
+  filter(row_number() %in% 60:166)
+
+#Counting up the storms per year 
+storms <- storms %>% 
+  dplyr::group_by(Year) %>% 
+  dplyr::summarise(count = sum(Count))
+
+#This replaces NAs with 0s
+storms[is.na(storms)] <- 0
+
+#Renaming count to storms 
+#New data frame called "Storms" for the model 
+Storms <- storms %>%
+  rename(Storms = count)
+
+#Save cleaned storms data 
+#write.csv(Storms, file = "Storm_data.csv")
+
+#=================================================================================================
+#Human population data 
+#Read in UK population data 
+
+#Population data UK
+#Also in the "modelling' folder 
+#This is a data file that is combined with yearly strandings 
+
+Population <- read.csv("Population_UK.csv")
+Population <- Population %>%
+  rename(Year = YEAR) %>%
+  rename(Population = POPULATION)
+
+#Filter out turtle dates 
+#1960-2014
+Population <- Population %>% 
+  filter(row_number() %in% 48:102)
+
+#Save data for pulling into final correlates dataset 
+#write.csv(Population, file = Population)
+
+#===============================================================================================
+#NAO data 
+
+NAO_data <- read.csv("NAO_data.csv")
+NAO_data$X <- NULL
+
+#Rename the columns if required 
+#NAO_data <- NAO_data %>%
+#dplyr::rename(NAO_index = n)
+
+#Cut down to turtle dates as above
+NAO_data <- NAO_data %>% 
+  filter(row_number() %in% 48:102)
+
+
+#================================================================================================
+#This is for sea surface temperature - it's a little more complicated! 
+
+#Packages required for data cleaning
+#install.packages("dplyr")
+#install.packages("lubridate")
+library(dplyr)
+library(lubridate)
+
+#Extracting mean sea surface temperature data for UK and Ireland 
+#Downloading csv from Ellen's dropbox here - will write actual code for Github 
+
+#Read in data 
+#Working directory set 
+UK_mean_SST <- read.csv("UK_mean_SST.csv")
+
+#Renaming uk_mean_SST columns 
+#If an error message runs, check to see if this is already done 
+UK_mean_SST <- UK_mean_SST %>%
+  rename(Date = time)
+
+
+#Filter out the columns we want - this is 1960:2014
+#Filtered this way instead of by year (for example) because the dates were messy 
+UK_mean_SST <- UK_mean_SST %>% 
+  filter(row_number() %in% 1081:1740)
+
+#Remove surplus column 
+UK_mean_SST$X <- NULL
+
+#Change date format of new dataset
+sapply(UK_mean_SST, class) #what class are the variables?
+UK_mean_SST <- mutate(UK_mean_SST, Date = dmy(Date))
+
+
+#Splitting SST into day, month, year 
+#This code is for breaking down into day, month, year 
+df <- data.frame(date = UK_mean_SST$Date,
+                 year = as.numeric(format(UK_mean_SST$Date, format = "%Y")),
+                 month = as.numeric(format(UK_mean_SST$Date, format = "%m")),
+                 day = as.numeric(format(UK_mean_SST$Date, format = "%d")))
+
+
+#Binding SST and dates/months/years and removing the extra 'date' 
+SST_day_month_year <- bind_cols(df, UK_mean_SST) 
+SST_day_month_year$Date <- NULL
+
+#Average SST for each of the months from 1960 - 2014
+aggregate(SST_day_month_year$UK_mean, by = list(SST_day_month_year$year), mean)
+SST_yearly_mean <- aggregate(UK_mean ~ year, data = SST_day_month_year, mean)
+
+#We now have a mean montly temp (taken from 14 loctions since for 1960 - 2014)
+#Save this as sea turtle data (1960-2015)
+
+#Now save SST_yearly_mean
+#write.csv(SST_yearly_mean, file = "SST_yearly_mean.csv")
+
+SST_yearly_mean <- read.csv("SST_yearly_mean.csv")
+
+
+#===============================================================================================
+#Bind all the data together for modelling 
+#install.packages("tidyr") #- run this when running the code for the first time 
+library(tidyr)
+
+#Ensure all correlates are read in using the above script 
+Small_turtle_model <- bind_cols(Small_strandings, Population, Storms, SST_yearly_mean, NAO_data)
+
+
+#Remove uneeded columns 
+Small_turtle_model$Year1<- NULL
+Small_turtle_model$year <- NULL 
+Small_turtle_model$X <- NULL 
+Small_turtle_model$Year2 <- NULL 
+Small_turtle_model$Year3 <- NULL
+
+#Change the name of the SST variable, year and strandings count
+Small_turtle_model <- Small_turtle_model %>%
+  rename("UK_mean_SST" = UK_mean) %>%
+  rename("Total_strandings" = "Count")
+
+
