@@ -1,0 +1,70 @@
+#Simualtion models 
+#Running simulation models for small turtles that strand 
+#dataset is 19161-2009
+
+simulated_arrivals <- read.csv("Simulated_arrivals.csv")
+#1961 - 2009
+
+
+#================================================================================================
+#GS transport data 
+
+######## THIS IS TO 2009 (others are currently to 2014)
+
+GS_transport <- read.csv("GS_transport.csv")
+#Cut down to turtle dates 
+GS_transport <- GS_transport %>% 
+  filter(row_number() %in% 12:61)
+
+
+#================================================================================================
+#NAC transport data 
+
+######## THIS IS TO 2009 (others are currently to 2014)
+NAC_transport <- read.csv("NAC_transport.csv")
+#Cut down to turtle dates 
+NAC_transport <- NAC_transport %>% 
+  filter(row_number() %in% 12:61)
+
+
+
+#================================================================================================
+#Mortality data 
+
+#The extent of these data is 2007 
+Mortality <- read.csv('mortality.csv')
+Mortality <- Mortality %>%
+  filter(row_number() %in% 13:60)
+
+Mortality <- Mortality %>%
+  select(year,mortality)
+
+#=================================================================================================
+#Turtle stranding 2009 
+
+Small_turtle_strandings_2009 <- Small_strandings %>%
+  filter(row_number() %in% 1:50)
+
+#=================================================================================================
+#Population 2009 
+
+Population_2009 <- Population %>%
+  filter(row_number() %in% 1:50)
+
+#=================================================================================================
+#Bind all the data together for modelling 
+#install.packages("tidyr") - run this when running the code for the first time 
+install.packages("tidyr")
+library(tidyr)
+
+#Ensure all correlates are read in using the above script 
+Small_simulation_model <- bind_cols(Small_turtle_strandings_2009, Population_2009, GS_transport, NAC_transport)
+
+#Remove uneeded columns 
+Small_simulation_model$Year1<- NULL
+Small_simulation_model$Year2 <- NULL 
+Small_simulation_model$Year3 <- NULL
+
+#Change the name of the SST variable, year and strandings count
+Small_simulation_model <- Small_simulation_model %>%
+  rename("Total_strandings" = "Count")
