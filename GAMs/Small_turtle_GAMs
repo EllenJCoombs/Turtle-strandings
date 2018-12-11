@@ -1,38 +1,247 @@
+#These are the final small turtle GAMs for Lisa 
 
-#Running turtle generlised additive models (GAMs)
+#Small turtle strandings 
+#With human population data 
+#Storm_index_model 
+#NAO 
+#UK_mean_SST 
 
 library(dplyr)
-install.packages("mgcv") #run this when running the code for the first time 
 library(mgcv)
+library(gratia)
+
+small_turtles <- read.csv("turtle_small.csv")
+
+Small1960 <- small_turtles %>%
+  filter(row_number() %in% 1:50)
+
+#1960-2009
+Population <- read.csv("Population_UK.csv")
+
+#population  
+Population1960 <- Population %>%
+  filter(row_number() %in% 48:97)
+
+#Storms using Lisa's new data 
+Storms <- read.csv('Storm_index_model.csv')
+Storms1960 <- Storms %>%
+  filter(row_number() %in% 13:62)
+
+SST_1960 <- SST_yearly_mean %>%
+  filter(row_number() %in% 1:50)
+
+NAO1960 <- NAO_data %>%
+  filter(row_number() %in% 1:50)
+
+#Can add NAC and GS data to this now 
+
+NAC1960 <- read.csv("NAC_transport.csv")
+
+NAC1960 <- NAC1960 %>%
+  filter(row_number() %in% 12:61)
+
+
+GS1960 <- read.csv("GS_transport.csv")
+
+GS1960 <- GS1960 %>%
+  filter(row_number() %in% 12:61)
+
+
+#All variables 1960 - 2014 
+
+Small_model_a <- bind_cols(Small1960, Population1960, Storms1960,
+                       SST_1960, NAO1960)
+
+#Clean the model
+Small_model_a$YEAR <- NULL
+Small_model_a$X <- NULL
+Small_model_a$year <- NULL
+Small_model_a$X <- NULL
+Small_model_a$Year1 <- NULL
+Small_model_a$Year2 <- NULL
+Small_model_a$Year3 <- NULL 
+Small_model_a$Year4 <- NULL
+
+
+Small_model_a <- Small_model_a %>%
+  rename(Storms = Storm) %>%
+  rename(Population = POPULATION) %>%
+  rename(UK_mean_SST = UK_mean) %>%
+  rename(Total_strandings = Count)
+
 
 #This is to check how high to make the k value (k-1)
 #k (almost always k-1)
-unique(Small_turtle_model$UK_mean_SST) #multiple groups 
-unique(Small_turtle_model$Storms) #7 groups 
-unique(Small_turtle_model$NAO_index) #multiple groups
-uni
-
+unique(Small_model_a$UK_mean_SST)
+unique(Small_model_a$Storms)
+unique(Small_model_a$NAO_index)
 #GAM for the above with Species as the factor smooth 
+
+
 Small_turtles_a <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
-                   s(Storms, k=7, bs="ts") +
-                   s(UK_mean_SST, bs="ts") +
-                   s(NAO_index, bs="ts"), 
-                 data= Small_turtle_model, 
-                 method = "REML",
-                 family=quasipoisson())
+                         s(Storms, k=15, bs="ts") +
+                         s(UK_mean_SST,  bs="ts") +
+                         s(NAO_index, bs="ts"), 
+                       data= Small_model_a, 
+                       method = "REML",
+                       family=poisson())
 
 #GAM summary and GAM plots 
 summary(Small_turtles_a)
 par(mfrow = c(2,2))
 plot(Small_turtles_a)
-
+#In gratia 
+draw(Small_turtles_a)
 
 #Gam.check
 par(mfrow=c(2,2))
 gam.check(Small_turtles_a)
 
-#Different response counts to work with 
-#family=tw(a=1.2))
-#family=quasipoisson())
-#family=poisson())
-family=nb())
+appraise(Small_turtles_a)
+
+#====================================================================
+#Using my storm data (this is a quick test) 
+storms <- storms %>%
+  filter(row_number() %in% 1:50)
+
+
+Ellen_storm <- bind_cols(Small1960, Population1960, storms,
+                           SST_1960, NAO1960)
+
+Ellen_storm$YEAR <- NULL
+Ellen_storm$X <- NULL
+Ellen_storm$year <- NULL
+Ellen_storm$X <- NULL
+Ellen_storm$Year1 <- NULL
+Ellen_storm$Year2 <- NULL
+Ellen_storm$Year3 <- NULL 
+Ellen_storm$Year4 <- NULL
+
+
+Ellen_storm <- Ellen_storm %>%
+  rename(Storms = count) %>%
+  rename(Population = POPULATION) %>%
+  rename(UK_mean_SST = UK_mean) %>%
+  rename(Total_strandings = Count)
+
+
+unique(Ellen_storm$Storms)
+  
+Ellen_model <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
+                         s(Storms, k=6, bs="ts") +
+                         s(UK_mean_SST, bs="ts") +
+                         s(NAO_index, bs="ts"), 
+                       data= Ellen_storm, 
+                       method = "REML",
+                       family=nb())
+
+#GAM summary and GAM plots 
+summary(Ellen_model)
+par(mfrow = c(2,2))
+plot(Ellen_model)
+draw(Ellen_model)
+
+#Gam.check
+par(mfrow=c(2,2))
+gam.check(Ellen_model)
+
+
+#======================================================================
+#Ocean transport models 
+#NAC and GS data are avialable from 1948, but the small strandings data is 
+#1960-2009 so this contrains the model accordingly 
+
+Small_model_b <- bind_cols(Small1960, Population1960, NAC1960, GS1960) 
+
+
+Small_model_b$YEAR <- NULL
+Small_model_b$X <- NULL
+Small_model_b$year <- NULL
+Small_model_b$X <- NULL
+Small_model_b$Year1 <- NULL
+Small_model_b$Year2 <- NULL
+Small_model_b$Year3 <- NULL 
+Small_model_b$Year4 <- NULL
+
+Small_model_b <- Small_model_b %>%
+  rename(Population = POPULATION) %>%
+  rename(Total_strandings = Count)
+
+
+Small_turtles_b <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
+                         s(GS_transport, bs="ts") +
+                         s(NAC_transport, bs="ts"),
+                       data= Small_model_b, 
+                       method = "REML",
+                       family=tw(a=1.2))
+
+
+#GAM summary and GAM plots 
+summary(Small_turtles_b)
+par(mfrow = c(2,2))
+plot(Small_turtles_b)
+#In gratia 
+draw(Small_turtles_b)
+
+#Gam.check
+par(mfrow=c(2,2))
+gam.check(Small_turtles_b)
+#In gratia 
+appraise(Small_turtles_b)
+
+#============================================================
+#Simulated and mortality model 
+#Simulated data are constrained from 1961 - 2009 
+#Mortality data are constrained from 1948 - 2007 
+#Model = 1961 - 2007 
+
+Simulated <- read.csv("Simulated_arrivals.csv")
+Mortality <- read.csv("mortality.csv")
+
+Simulated_arrivals <- Simulated %>%
+  filter(row_number() %in% 1:47)
+
+Mortality_2007 <- Mortality %>%
+  filter(row_number() %in% 14:60)
+
+Small_turtles2007 <- small_turtles %>%
+  filter(row_number() %in% 2:48)
+
+Population2007 <- Population %>%
+  filter(row_number() %in% 49:95)
+
+
+Small_model_c <- bind_cols(Small_turtles2007, Population2007, 
+                           Mortality_2007, Simulated_arrivals) 
+
+Small_model_c$YEAR <- NULL
+Small_model_c$X <- NULL
+Small_model_c$year <- NULL
+Small_model_c$Year1 <- NULL
+
+
+Small_model_c <- Small_model_c %>%
+  rename(Population = POPULATION) %>%
+  rename(Total_strandings = Count) %>%
+  rename(Mortality = mortality)
+
+
+Small_turtles_c <- gam(Total_strandings ~ offset(log(Population)) +s(Year, bs = "ts") +
+                         s(Simulated_arrivals, bs="ts") +
+                         s(Mortality, bs="ts"),
+                       data= Small_model_c, 
+                       method = "REML",
+                       family=tw(a=1.2))
+
+#GAM summary and GAM plots 
+summary(Small_turtles_c)
+par(mfrow = c(2,2))
+plot(Small_turtles_c)
+#In gratia 
+draw(Small_turtles_c)
+
+#Gam.check
+par(mfrow=c(2,2))
+gam.check(Small_turtles_c)
+#In gratia 
+appraise(Small_turtles_b)
