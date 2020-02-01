@@ -40,6 +40,8 @@ GAM1 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
                   data= Model1, 
                   method = "REML",
                   family=nb())
+                  #family=tw(a=1.2))
+
 
 #GAM summary and GAM plots 
 summary(GAM1)
