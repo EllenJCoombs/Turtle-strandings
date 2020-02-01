@@ -32,26 +32,26 @@ unique(Model1$NAO_index) #multiple groups
 
 #GAM for the above with no factor smooth 
 #Environmental model: 1960 - 2009 (cut to 2009 because of Patrick's storm_index)
-Model1 <- gam(turtle_count ~ offset(log(human_population))+ s(year, bs = "ts") +
-                s(storm_count, k=6, bs="ts") +
-                s(NAO_index, bs="ts"),
-                s(mean_sst, bs = "ts"), 
-              data = Model1,
-              method = "REML",
-              family=nb())
+GAM1 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
+                    s(storm_count, k=7, bs="ts") +
+                    s(NAO_index, k=4, bs="ts") +
+                    s(mean_sst, bs="ts"),
+                  data= Model1, 
+                  method = "REML",
+                  family=nb())
 
 #GAM summary and GAM plots 
-summary(Model1)
+summary(GAM1)
 par(mfrow = c(2,2))
 plot(Model1)
 
 
 #Gam.check
 par(mfrow=c(2,2))
-gam.check(Model1)
+gam.check(GAM1)
 
 
 #With gratia (nicer plots for publication)
 
-draw(Model1)
-appraise(Model1)
+draw(GAM1)
+appraise(GAM1)
