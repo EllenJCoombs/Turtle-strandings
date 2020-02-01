@@ -34,8 +34,7 @@ unique(Model1$NAO_index) #multiple groups
 Model1 <- gam(turtle_count ~ offset(log(human_population))+ s(year, bs = "ts") +
                 s(storm_count, k=6, bs="ts") +
                 s(NAO_index, bs="ts"),
-              #s(storm_index, bs = "ts"),
-              #s(mean_sst, bs = "ts"), 
+                s(mean_sst, bs = "ts"), 
               data = Model1,
               method = "REML",
               family=nb())
