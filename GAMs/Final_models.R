@@ -7,8 +7,16 @@ library(dplyr) #To clean up any dataframe issues
 library(mgcv)
 library(gratia)
 
+##########################
+#                        #
+#        Model 1         #
+#                        #
+##########################
 
 #Read in new data frame (Model1)
+#Model 1 runs using turtle count, storm count (Ellen's data), NAO index (Ellen's data) 
+#Mean sea surface temperature (UK) (Ellen's data), human population (Ellen's data) 
+#The model is constrained to from 1969 to 2014 because of XX data 
 
 Model1 <- read.csv('Model1_2014.csv')
 
