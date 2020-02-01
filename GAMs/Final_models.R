@@ -58,3 +58,47 @@ gam.check(GAM1)
 
 draw(GAM1)
 appraise(GAM1)
+
+
+
+
+##########################
+#                        #
+#        Model 2         #
+#                        #
+##########################
+
+
+#Model 2 with Patrick's storm index (JRA_GB) 
+#This model is also constrained by turtle straninds (1960 - 2014)
+
+Model2 <- read.csv('Model2_2014.csv') 
+unique(Model1$storm_index_JRA_GB) #multiple groups 
+unique(Model1$storm_count) #7 groups 
+unique(Model1$NAO_index) #multiple groups
+
+
+GAM2 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
+              s(storm_index_JRA_GB, k=7, bs="ts") +
+              s(NAO_index, k=7, bs="ts") +
+              s(mean_sst, bs="ts"),
+            data= Model2, 
+            method = "REML",
+            family=poisson())
+
+
+#GAM summary and GAM plots 
+summary(GAM2)
+par(mfrow = c(2,2))
+plot(GAM2)
+
+
+#Gam.check
+par(mfrow=c(2,2))
+gam.check(GAM2)
+
+
+#With gratia (nicer plots for publication)
+
+draw(Model1)
+appraise(Model1)
