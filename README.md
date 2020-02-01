@@ -5,7 +5,7 @@ Data:
 
 Most variables are constrained by the turtle strandings data (1960-2019) 
 
-GStransport: 1949-2009
+GStransport: 1949-2009 //
 NACtransport: 1949-2009 
 NAO: 1913-2015
 Ntraj_14w: 1960-2009 
