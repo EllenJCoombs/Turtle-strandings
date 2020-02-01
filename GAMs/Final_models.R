@@ -19,6 +19,7 @@ library(gratia)
 #The model is constrained to from 1969 to 2014 because of turtle strandings which only run to 2014. 
 
 Model1 <- read.csv('Model1_2014.csv')
+#Model1[4] <- lapply(Model1[4], as.numeric) if there are problems with the dataframe having intergers rather than numeric
 
 
 #Replace SST with storm_index data - keep human population data and Year as advised by Ellen 
