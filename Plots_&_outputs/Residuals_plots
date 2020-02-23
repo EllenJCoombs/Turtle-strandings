@@ -3,17 +3,15 @@
 #Residual plots for covariates 
 
 
-load("Model_for_Dave.Rdata")
-
 #SST
-sst_bins <- cut(all_strandings$Max_SST, c(14,15,16,17,18))
+sst_bins <- cut(Model1$storm_index, c(0,1,2,3,4,5,6,7,8))
 sst_resid_data <- data.frame(SST=sst_bins, resids=residuals(All_strandc))
 boxplot(resids~SST, data=sst_resid_data)
 
 
 #Storms
-storm_bins <- cut(all_strandings$Storms, c(0,1,2,3,4,5,6,7,8))
-storm_resid_data <- data.frame(Storms=storm_bins, resids=residuals(All_strandc))
+sst_bins <- cut(Model1$storm_index, c(0,1,2,3,4,5,6,7,8))
+storm_resid_data <- data.frame(Storms=storm_bins, resids=residuals(GAM1))
 boxplot(resids~Storms, data=storm_resid_data)
 
 
