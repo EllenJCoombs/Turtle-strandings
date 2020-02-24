@@ -4,25 +4,24 @@
 
 
 #SST
-sst_bins <- cut(Model1$storm_index, c(0,1,2,3,4,5,6,7,8))
-sst_resid_data <- data.frame(SST=sst_bins, resids=residuals(All_strandc))
-boxplot(resids~SST, data=sst_resid_data)
+sst_bins <- cut(Model1$mean_sst, c(10,11,12,13))
+sst_resid_data <- data.frame(SST=sst_bins, resids=residuals(GAM1))
+boxplot(resids~SST, data=sst_resid_data, xlab="mean sst bins")
 
 
 #Storms
-sst_bins <- cut(Model1$storm_index, c(0,1,2,3,4,5,6,7,8))
+storm_bins <- cut(Model1$storm_count, c(0,1,2,3,4,5,6,7,8))
 storm_resid_data <- data.frame(Storms=storm_bins, resids=residuals(GAM1))
-boxplot(resids~Storms, data=storm_resid_data)
-
-
-#K-index (Geomagnetic data)
-geom_bins <- cut(all_strandings$Max_K_index, c(5,6,7,8,9))
-geom_resid_data <- data.frame(K_index=geom_bins, resids=residuals(All_strandc))
-boxplot(resids~K_index, data=geom_resid_data)
+boxplot(resids~Storms, data=storm_resid_data, xlab="storm count bins")
 
 
 #NAO_index 
-NAO_bins <- cut(all_strandings$NAO_index, c(-6,-5,-4,-3,-2,-1,0,1,2,3,4,5))
-NAO_resid_data <- data.frame(NAO=NAO_bins, resids=residuals(All_strandc))
-boxplot(resids~NAO, data=NAO_resid_data)
+NAO_bins <- cut(Model1$NAO_index, c(-6,-5,-4,-3,-2,-1,0,1,2,3,4,5))
+NAO_resid_data <- data.frame(NAO=NAO_bins, resids=residuals(GAM1))
+boxplot(resids~NAO, data=NAO_resid_data, xlab="NAO bins"))
 
+
+#storm_index_JRA_GB (Model 2)  
+storm_JRA_GB_bins <- cut(Model2$storm_index_JRA_GB), c(-6,-5,-4,-3,-2,-1,0,1,2,3,4,5))
+storm_JRA_GB_resid_data <- data.frame(StormsJRAGB=storm_JRA_GB_bins, resids=residuals(GAM2))
+boxplot(resids~StormsJRAGB, dstorm_JRA_GB_resid_data, xlab="storm JRA GB bins"))
