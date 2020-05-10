@@ -31,7 +31,7 @@ unique(Model1$storm_count) #7 groups
 unique(Model1$NAO_index) #multiple groups
 
 #GAM for the above with no factor smooth 
-#Environmental model: 1960 - 2014 (constrained by turlte strandings) 
+#Environmental model: 1960 - 2014 (constrained by yearly turtle strandings) 
 
 GAM1 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
                     s(storm_count, k=7, bs="ts") +
