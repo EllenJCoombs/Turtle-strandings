@@ -70,7 +70,7 @@ appraise(GAM1)
 
 
 #Model 2 with Patrick's storm index (JRA_GB) 
-#This model is also constrained by turtle straninds (1960 - 2014)
+#This model is also constrained by yearly turtle strandings (1960 - 2014)
 
 Model2 <- read.csv('Model2_2014.csv') 
 unique(Model1$storm_index_JRA_GB) #multiple groups 
