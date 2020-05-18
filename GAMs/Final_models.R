@@ -18,7 +18,7 @@ library(gratia)
 #Mean sea surface temperature (UK) (Ellen's data), human population (Ellen's data) 
 #The model is constrained to from 1969 to 2014 because of turtle strandings which only run to 2014. 
 
-Model1 <- read.csv('Model1_2014.csv')
+Model3 <- read.csv('Model3_2014.csv') #With both sets of storm data 
 #Model1[4] <- lapply(Model1[4], as.numeric) if there are problems with the dataframe having intergers rather than numeric
 
 
@@ -33,72 +33,29 @@ unique(Model1$NAO_index) #multiple groups
 #GAM for the above with no factor smooth 
 #Environmental model: 1960 - 2014 (constrained by yearly turtle strandings) 
 
-GAM1 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
-                    s(storm_count, k=7, bs="ts") +
-                    s(NAO_index, k=4, bs="ts") +
-                    s(mean_sst, bs="ts"),
-                  data= Model1, 
-                  method = "REML",
-                  family=nb())
-                  #family=tw(a=1.2))
+library(cars) 
+durbinWatsonTest(lm(storm_count ~ mean_sst, data=Model1))
 
 
-#GAM summary and GAM plots 
-summary(GAM1)
-par(mfrow = c(2,2))
-plot(Model1)
-
-
-#Gam.check
-par(mfrow=c(2,2))
-gam.check(GAM1)
-
-
-#With gratia (nicer plots for publication)
-
-draw(GAM1)
-appraise(GAM1)
-
-
-
-
-##########################
-#                        #
-#        Model 2         #
-#                        #
-##########################
-
-
-#Model 2 with Patrick's storm index (JRA_GB) 
-#This model is also constrained by yearly turtle strandings (1960 - 2014)
-
-Model2 <- read.csv('Model2_2014.csv') 
-unique(Model1$storm_index_JRA_GB) #multiple groups 
-unique(Model1$storm_count) #7 groups 
-unique(Model1$NAO_index) #multiple groups
-
-
-GAM2 <- gam(turtle_count ~ offset(log(human_population)) +s(year, bs="fs") +
-              s(storm_index_JRA_GB, k=7, bs="ts") +
-              s(NAO_index, k=7, bs="ts") +
+GAM3 <- gam(turtle_count ~ offset(log(human_population)) + s(year, bs="ts") +
+              s(storm_count, k=7, bs="ts") +
+              s(storm_index_JRA_GB, bs="ts") +
+              s(NAO_index, bs="ts") +
               s(mean_sst, bs="ts"),
-            data= Model2, 
+            data= Model3, 
             method = "REML",
             family=poisson())
 
 
+
 #GAM summary and GAM plots 
-summary(GAM2)
+summary(GAM3)
 par(mfrow = c(2,2))
-plot(GAM2)
-
-
-#Gam.check
-par(mfrow=c(2,2))
-gam.check(GAM2)
+plot(GAM3)
+gam.check(GAM3)
 
 
 #With gratia (nicer plots for publication)
 
-draw(Model1)
-appraise(Model1)
+draw(GAM3)
+appraise(GAM3)
